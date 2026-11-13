@@ -16,6 +16,9 @@ const inpHours = document.getElementById(
 const inpPrice = document.getElementById(
   "inp-price",
 ) as HTMLInputElement | null;
+const inpLate = document.getElementById(
+  "inp-late",
+) as HTMLInputElement | null;
 const btnAdd = document.getElementById("btn-add") as HTMLButtonElement | null;
 const errorContainer = document.getElementById(
   "error-container",
@@ -47,13 +50,17 @@ const inpTotalRentals = document.getElementById(
 const inpTotalIncome = document.getElementById(
   "inp-total-income",
 ) as HTMLInputElement | null;
+const inpTotalLate = document.getElementById(
+  "inp-total-late",
+) as HTMLInputElement | null;
 
 function clearInputs(): void {
-  if (inpCustomer && inpCode && inpHours && inpPrice) {
+  if (inpCustomer && inpCode && inpHours && inpPrice && inpLate) {
     inpCustomer.value = "";
     inpCode.value = "";
     inpHours.value = "";
     inpPrice.value = "";
+    inpLate.value = "";
   }
 }
 
@@ -82,7 +89,10 @@ function createDeleteButton(rental: Rental): HTMLButtonElement {
   button.textContent = "Eliminar";
   button.setAttribute("aria-label", `Eliminar ${rental.bikeCode}`);
   button.addEventListener("click", () => {
-    // TODO: eliminar este alquiler y actualizar los paneles
+    rentalList.remove(rental.bikeCode);
+  updateList();
+  updateListByType();
+  updateTotals();
   });
   return button;
 }
@@ -97,8 +107,11 @@ function createCard(rental: Rental): HTMLDivElement {
   const title = document.createElement("h5");
   title.className = "card-title";
   title.textContent = rental.bikeCode;
+  const badge = document.createElement("span");
+  badge.className = "badge text-bg-secondary";
+  badge.textContent = `${BIKE_TYPE_LABELS[rental.bikeType]}`;
+  title.appendChild(badge);
   const lines = [
-    `Tipo: ${BIKE_TYPE_LABELS[rental.bikeType]}`,
     `Cliente: ${rental.customer}`,
     `Horas: ${rental.hours}`,
     `Costo: $${rental.cost()}`,
@@ -133,9 +146,10 @@ function updateListByType(): void {
 }
 
 function updateTotals(): void {
-  if (inpTotalRentals && inpTotalIncome) {
+  if (inpTotalRentals && inpTotalIncome && inpTotalLate) {
     inpTotalRentals.value = String(rentalList.getItems().length);
     inpTotalIncome.value = String(rentalList.totalIncome());
+    inpTotalLate.value = String(rentalList.totalLateFees());
   }
 }
 
