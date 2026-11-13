@@ -1,5 +1,4 @@
 import type { BikeType, Rental } from "./Rental.ts";
-
 export class RentalList {
   #items: Rental[] = [];
 
@@ -14,7 +13,18 @@ export class RentalList {
   }
 
   remove(_bikeCode: string): void {
-    // TODO: eliminar el alquiler de esa bicicleta
+    const bikes: Rental[] = [];
+    this.#items.forEach((bike) => {
+      if (bike.bikeCode !== _bikeCode) {
+        bikes.push(bike);
+      }
+    });
+    if (bikes.length === this.#items.length) {
+      throw new Error(
+        `No se encuentra bicicleta ${_bikeCode} en la base de datos`,
+      );
+    }
+    this.#items = bikes;
   }
 
   getItems(): readonly Rental[] {
@@ -30,7 +40,10 @@ export class RentalList {
   }
 
   totalLateFees(): number {
-    // TODO: sumar los recargos por atraso de todos los alquileres
-    return 0;
+    let total: number = 0;
+    this.getItems().forEach((bike) => {
+      total += bike.lateHours * bike.pricePerHour * 2;
+    });
+    return total;
   }
 }

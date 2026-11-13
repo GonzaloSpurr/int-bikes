@@ -15,30 +15,44 @@ describe("RentalList", () => {
       hours: 3,
       pricePerHour: 100,
     });
+    list.add(rental);
   });
 
   test("Create an empty rental list", () => {
-    expect(list.getItems()).toEqual([]);
+    const emptyList = new RentalList();
+    expect(emptyList.getItems()).toEqual([]);
   });
 
   test("add a rental", () => {
-    list.add(rental);
     expect(list.getItems()).toEqual([rental]);
   });
 
   test("reject a bike that is already rented", () => {
-    list.add(rental);
     expect(() => list.add(rental)).toThrow();
   });
 
   test("filter rentals by type", () => {
-    list.add(rental);
     expect(list.getByType("urban")).toEqual([rental]);
     expect(list.getByType("electric")).toEqual([]);
   });
 
   test("total income", () => {
-    list.add(rental);
     expect(list.totalIncome()).toBe(300);
+  });
+
+  test("remove a bike", () => {
+    list.remove("B-123");
+    expect(list.getItems()).toStrictEqual([]);
+  });
+
+  test("can't remove a non-existant bike", () => {
+    expect(() => list.remove("0xDEADBEEF")).toThrow();
+  });
+
+  test("late fees are calculated correctly", () => {
+    rental.lateHours = 1;
+    const newList = new RentalList();
+    newList.add(rental);
+    expect(newList.totalLateFees()).toBe(200);
   });
 });
