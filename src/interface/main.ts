@@ -168,7 +168,7 @@ updateTotals();
 
 selFilterType?.addEventListener("change", updateListByType);
 
-if (btnAdd && inpCustomer && inpCode && selType && inpHours && inpPrice) {
+if (btnAdd && inpCustomer && inpCode && selType && inpHours && inpPrice && inpLate) {
   btnAdd.addEventListener("click", () => {
     try {
       const rental = new Rental({
@@ -178,6 +178,7 @@ if (btnAdd && inpCustomer && inpCode && selType && inpHours && inpPrice) {
         hours: Number(inpHours.value),
         pricePerHour: Number(inpPrice.value),
       });
+      rental.lateHours = Number (inpLate.value);
       rentalList.add(rental);
       hideError();
       clearInputs();
